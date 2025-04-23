@@ -1,0 +1,31 @@
+# Node modules
+**/node_modules/
+
+# Environment variables
+**/.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS-related
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/
+
+# Dependency directories
+bower_components/
+
+# Others
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
