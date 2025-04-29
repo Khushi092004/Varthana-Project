@@ -14,13 +14,25 @@ const LoginForm = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/api/auth/send-otp', {
+      const response = await axios.post('http://localhost:5000/api/auth/send-otp', {
         customerId,
         panNumber,
-      });
+      }
+      );
+
+      sessionStorage.setItem("token", response.data.token);
+
       setOtpPhase(true);
-    } catch {
-      alert('Error sending OTP');
+    } catch (err){
+      if (err.response) {
+        console.log("Status:", err.response.status);
+        console.log("Message:", err.response.data?.error);
+      }
+      if (err.response && err.response.status === 404) {
+        alert("User not found. Please check your Customer ID and PAN.");
+      } else {
+        alert("Error sending OTP. Try again later.");
+      }
     }
   };
 
@@ -34,7 +46,7 @@ const LoginForm = () => {
           <button onClick={handleSendOTP}>Send OTP</button>
         </div>
       ) : (
-        <OTPInput customerId={customerId} />
+        <OTPInput customerId={customerId} panNumber={panNumber}/>
       )}
     </div>
   );

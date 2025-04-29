@@ -11,6 +11,6 @@ router.get("/protected", authMiddleware, (req, res) => {
 });
 
 router.get("/admin", authMiddleware, (req, res) => {
-  res.json({ message: "Welcome to Admin Dashboard", user: req.user });
+  res.json({ message: `Welcome to Admin Dashboard, ${req.user.customerId}`});
 });
 module.exports = router;

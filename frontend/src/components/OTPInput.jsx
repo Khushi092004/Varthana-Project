@@ -9,26 +9,11 @@ const OTPInput = ({ customerId, panNumber }) => {
   const [timer, setTimer] = useState(30);
   const [resending, setResending] = useState(false);
  
- //send OTP whn the component mounts or whn customerId/panNumber change
-  useEffect(()=>{
-    const sendOtp = async () =>{
-    try {
-      const response = await axios.post("/api/auth/send-otp",{
-        customerId,
-        panNumber,
-      });
-      const expiresIn = response.data.expiresIn || 30;
-      setTimer(expiresIn);
-    } catch (err) {
-      console.error("failed to send otp:", err);
-    }
-  };
-    sendOtp();
-  // focus on the first OTP input field
-    if (inputs.current[0]){
+  useEffect(() => {
+    if (inputs.current[0]) {
       inputs.current[0].focus();
     }
-  }, [customerId, panNumber]);
+  }, []);
 
   //countdown timer logic 
   useEffect(() => {
@@ -81,10 +66,15 @@ const OTPInput = ({ customerId, panNumber }) => {
         params: {
           customerId,
           otp: finalOtp
+        },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`
+          
         }
       });
       //store token 
-      localStorage.setItem("token", res.data.token);
+      sessionStorage.setItem("token", res.data.token);
       navigate("/admin");
     } catch {
       alert("Invalid OTP");
@@ -98,10 +88,18 @@ const OTPInput = ({ customerId, panNumber }) => {
       const response = await axios.post("http://localhost:5000/api/auth/send-otp", {
         customerId,
         panNumber 
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${Storage.getItem("token")}`,
+          "Content-Type": "application/json"
+        }
       });
+
       const expiresIn= response.data.expiresIn || 30;
       setOtp(new Array(6).fill(''));
       setTimer(expiresIn);
+
     } catch (error) {
       console.error("failed to resend otp :",error);
       alert("failed to resend otp");
